@@ -8,6 +8,7 @@ def scrape(url)
   html_string = open(url).read
   # Convert html string into a Nokogiri HTML object.
   nokogiri_html_doc = Nokogiri::HTML(html_string)
+  return nokogiri_html_doc
 end
 
 # The scrape_urls method:
@@ -20,6 +21,7 @@ def scrape_urls(nokogiri_html_doc)
   nokogiri_html_doc.search('a.product').each do |element|
     urls << element.attribute('href').value
   end
+  return urls
 end
 
 # Grab a list of urls.
@@ -35,7 +37,7 @@ def scrape_product(url)
   # Grab Nokogiri HTML object.
   nokogiri_html_doc = scrape(url)
   # Set empty strings.
-  title, orders_count, rating = ''
+  title, orders_count, rating, votes_count = ''
   # Search html object for the title.
   nokogiri_html_doc.search('h1.product-name').each do |element|
     title = element.text.strip
@@ -47,20 +49,32 @@ def scrape_product(url)
     orders_count = Integer(orders_count)
   end
   # Search html object for the rating.
-  # span.percent-num
   nokogiri_html_doc.search('span.percent-num').each do |element|
     rating = element.text.strip
     rating = rating.to_f
+  end
+  # Search html object for the votes_count.
+  nokogiri_html_doc.search('span.rantings-num').each do |element|
+    votes_count = element.text.strip
+    votes_count.slice!("(")
+    votes_count.slice!(" votos)")
+    votes_count = Integer(votes_count)
   end
   # Create product object.
   product = Hash.new
   product[:title] = title
   product[:orders_count] = orders_count
   product[:rating] = rating
+  product[:votes_count] = votes_count
   return product
 end
 
+# products = belts_urls.each_with_index { |item, index|
+#   p scrape_product(item)
+#   break
+# }
 p scrape_product(single_product_url)
+
 
 # Next up:
 # votes_count
