@@ -35,24 +35,26 @@ def scrape_product(url)
   # Grab Nokogiri HTML object.
   nokogiri_html_doc = scrape(url)
   # Set empty strings.
-  title, orders = ''
+  title, orders_count = ''
   # Search html object for the titles.
   nokogiri_html_doc.search('h1.product-name').each do |element|
     title = element.text.strip
   end
 
   nokogiri_html_doc.search('span.order-num').each do |element|
-    orders = element.text.strip
+    orders_count = element.text.strip
+    orders_count.slice!(" pedidos")
+    orders_count = Integer(orders_count)
   end
   # span.order-num
   # Create product object.
   product = Hash.new
   product[:title] = title
-  product[:orders] = orders
+  product[:orders_count] = orders_count
   return product
 end
 
 scrape_product(single_product_url)
 
-# rating, votes_count,
-
+# Next up:
+# rating, votes_count
