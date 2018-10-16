@@ -27,7 +27,7 @@ def scrape_product(url)
   # Grab Nokogiri HTML object.
   nokogiri_html_doc = scrape(url)
   # Set empty strings.
-  title, orders_count, rating, votes_count = ''
+  title, orders_count, rating, votes_count, price = ''
   # Search html object for the title.
   nokogiri_html_doc.search('h1.product-name').each do |element|
     title = element.text.strip
@@ -54,12 +54,19 @@ def scrape_product(url)
     votes_count.slice!(" votos)")
     votes_count = Integer(votes_count)
   end
+  # Search html object for the price.
+  nokogiri_html_doc.search('div.p-price-content span.p-price').each do |element|
+    price = element.text.strip
+  end
+
   # Create product object.
   product = Hash.new
   product[:title] = title
   product[:orders_count] = orders_count
   product[:rating] = rating
   product[:votes_count] = votes_count
+  product[:url] = url
+  product[:price] = price
   return product
 end
 
@@ -77,8 +84,8 @@ end
 def scrape_list_of_products(list, results)
   list.each do |item|
     values = []
-    item = scrape_product(item)
-    item.each do |key, value|
+    product = scrape_product(item)
+    product.each do |key, value|
       values << value
     end
     results << values
@@ -89,7 +96,7 @@ end
 def write_csv(csv_file_name, products)
   csv_options = { col_sep: ',', force_quotes: true, quote_char: '"' }
   CSV.open(csv_file_name, 'wb', csv_options) do |csv|
-    csv << ['Title', 'Orders Count', 'Rating', 'Votes Count']
+    csv << ['Title', 'Orders Count', 'Rating', 'Votes Count', 'Url', 'Price']
     products.each do |values|
       csv << values
     end
@@ -128,3 +135,11 @@ urls_and_csvs.each do |page|
 end
 
 puts 'Scrape was successful.'
+
+# Add price
+# div.p-price-content span.p-price
+
+  # Price min
+  # span.p-price span:nth-of-type(1)
+  # Price max
+  # span.p-price span:nth-of-type(2)
