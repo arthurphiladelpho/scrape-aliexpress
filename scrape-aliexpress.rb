@@ -67,12 +67,12 @@ def scrape_product(url)
   product[:votes_count] = votes_count
   product[:url] = url
   product[:price] = price
+  p "#{product} was scraped"
   return product
 end
 
 # Grab a list of urls.
 def get_list_of_urls(url)
-  # belts_url = "https://pt.aliexpress.com/category/201005182/yoga-belts.html?site=bra&g=y&needQuery=n&isrefine=y"
   html_doc = scrape(url)
   arr_of_urls = scrape_urls(html_doc)
   arr_of_urls.map! do |url|
@@ -112,34 +112,29 @@ def get_products(url, csv_file_name)
   p csv_file_name + ' exported successfully.'
 end
 
+# List of urls and files
 urls_and_csvs = [
   # belts
   ['https://pt.aliexpress.com/category/201005182/yoga-belts.html?isrefine=y&site=bra&g=y&needQuery=n&tag=', 'belts.csv'],
-  ['https://pt.aliexpress.com/category/201005182/yoga-belts/2.html?isrefine=y&site=bra&g=y&needQuery=n&tag=', 'belts.csv'],
-  # blocks
+  ['https://pt.aliexpress.com/category/201005182/yoga-belts/2.html?isrefine=y&site=bra&g=y&needQuery=n&tag=', 'belts2.csv'],
+  # # blocks
   ['https://pt.aliexpress.com/category/201005181/yoga-blocks.html?site=bra&g=y&needQuery=n&isrefine=y', 'blocks.csv'],
-  ['https://pt.aliexpress.com/category/201005181/yoga-blocks/2.html?isrefine=y&site=bra&g=y&needQuery=n&tag=', 'blocks.csv'],
-  ['https://pt.aliexpress.com/category/201005181/yoga-blocks/3.html?isrefine=y&site=bra&g=y&needQuery=n&tag=', 'blocks.csv'],
-  # mats
+  ['https://pt.aliexpress.com/category/201005181/yoga-blocks/2.html?isrefine=y&site=bra&g=y&needQuery=n&tag=', 'blocks2.csv'],
+  ['https://pt.aliexpress.com/category/201005181/yoga-blocks/3.html?isrefine=y&site=bra&g=y&needQuery=n&tag=', 'blocks3.csv'],
+  # # mats
   ['https://pt.aliexpress.com/category/201005176/yoga-mats.html?site=bra&g=y&needQuery=n&isrefine=y', 'mats.csv'],
-  ['https://pt.aliexpress.com/category/201005176/yoga-mats/2.html?isrefine=y&site=bra&g=y&needQuery=n&tag=', 'mats.csv'],
-  # blankets
+  ['https://pt.aliexpress.com/category/201005176/yoga-mats/2.html?isrefine=y&site=bra&g=y&needQuery=n&tag=', 'mats2.csv'],
+  # # blankets
   ['https://pt.aliexpress.com/category/201005184/yoga-blankets.html?isrefine=y&site=bra&g=y&needQuery=n&tag=', 'blankets.csv'],
-  # circles
+  # # circles
   ['https://pt.aliexpress.com/category/201005179/yoga-circles.html?site=bra&g=y&needQuery=n&tag=', 'circles.csv'],
-  ['https://pt.aliexpress.com/category/201005179/yoga-circles/2.html?site=bra&g=y&needQuery=n&tag=', 'circles.csv']
+  ['https://pt.aliexpress.com/category/201005179/yoga-circles/2.html?site=bra&g=y&needQuery=n&tag=', 'circles2.csv']
 ]
 
+# Call get products on all items of the list above.
 urls_and_csvs.each do |page|
   get_products(page[0], page[1])
 end
 
+# Success message.
 puts 'Scrape was successful.'
-
-# Add price
-# div.p-price-content span.p-price
-
-  # Price min
-  # span.p-price span:nth-of-type(1)
-  # Price max
-  # span.p-price span:nth-of-type(2)
